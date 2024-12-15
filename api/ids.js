@@ -1,20 +1,9 @@
-const fs = require('fs').promises;
-const path = require('path');
+const { Redis } = require('@upstash/redis');
 
-const DB_FILE = path.join(process.cwd(), 'database.json');
-
-async function readDatabase() {
-    try {
-        const data = await fs.readFile(DB_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        return { ids: [] };
-    }
-}
-
-async function writeDatabase(data) {
-    await fs.writeFile(DB_FILE, JSON.stringify(data, null, 2));
-}
+const redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 module.exports = async (req, res) => {
     // Настройка CORS
@@ -30,11 +19,11 @@ module.exports = async (req, res) => {
 
     try {
         if (req.method === 'GET') {
-            const data = await readDatabase();
-            res.json(data);
+            const ids = await redis.get('steamids') || [];
+            res.json({ ids });
         } else if (req.method === 'POST') {
             const { ids } = req.body;
-            await writeDatabase({ ids });
+            await redis.set('steamids', ids);
             res.json({ success: true });
         } else {
             res.status(405).json({ error: 'Method not allowed' });
