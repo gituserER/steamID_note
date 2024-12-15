@@ -11,6 +11,33 @@ h1 {
     color: #333;
 }
 
+.controls {
+    margin: 20px auto;
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#counter {
+    font-size: 14px;
+    color: #666;
+}
+
+#copyButton {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#copyButton:hover {
+    background-color: #45a049;
+}
+
 textarea {
     width: 90%;
     height: 400px;
